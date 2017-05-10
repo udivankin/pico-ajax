@@ -1,0 +1,60 @@
+{
+  "name": "pico-ajax",
+  "version": "0.1.1",
+  "description": "Very tiny yet functional ajax library written in ES6",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-core": "^6.24.1",
+    "babel-loader": "^7.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "webpack": "^2.5.1"
+  },
+  "babel": {
+    "env": {
+      "production": {
+        "presets": [
+          ["es2015"],
+          "stage-3"
+        ],
+        "plugins": []
+      },
+      "development": {
+        "presets": [
+          ["es2015"],
+          "stage-3"
+        ],
+        "plugins": []
+      }
+    }
+  },
+  "scripts": {
+    "build": "webpack --env production",
+    "dev": "webpack --progress --watch --env development",
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/udivankin/pico-ajax.git"
+  },
+  "keywords": [
+    "ajax",
+    "fetch",
+    "picoajax",
+    "nanoajax",
+    "microajax",
+    "superagent"
+  ],
+  "author": "allx",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/udivankin/pico-ajax/issues"
+  },
+  "homepage": "https://github.com/udivankin/pico-ajax#readme"
+}

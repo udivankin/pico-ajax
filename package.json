@@ -1,6 +1,6 @@
 {
   "name": "pico-ajax",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Very tiny yet functional ajax library written in ES6",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -14,20 +14,26 @@
     "babel-loader": "^7.0.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-3": "^6.24.1",
+    "jasmine": "^2.6.0",
+    "jasmine-ajax": "^3.3.1",
     "webpack": "^2.5.1"
   },
   "babel": {
     "env": {
       "production": {
         "presets": [
-          ["es2015"],
+          [
+            "es2015"
+          ],
           "stage-3"
         ],
         "plugins": []
       },
       "development": {
         "presets": [
-          ["es2015"],
+          [
+            "es2015"
+          ],
           "stage-3"
         ],
         "plugins": []
@@ -37,7 +43,7 @@
   "scripts": {
     "build": "webpack --env production",
     "dev": "webpack --progress --watch --env development",
-    "test": "npm test"
+    "test": "jasmine JASMINE_CONFIG_PATH=jasmine.json"
   },
   "repository": {
     "type": "git",
@@ -46,9 +52,13 @@
   "keywords": [
     "ajax",
     "fetch",
+    "axious",
     "picoajax",
+    "pico-ajax",
     "nanoajax",
+    "nano-ajax",
     "microajax",
+    "micr-oajax",
     "superagent"
   ],
   "author": "allx",

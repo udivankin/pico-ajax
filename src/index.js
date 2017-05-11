@@ -6,28 +6,28 @@
  */
 
  /**
-  * Http request methods
+  * Known HTTP request methods
   */
-export const requestMethods = [
-  'CONNECT',
-  'DELETE',
-  'GET',
-  'HEAD',
-  'OPTIONS',
-  'PATCH',
-  'POST',
-  'PUT',
-  'TRACE',
+const REQUEST_METHODS = [
+  'CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT',
+];
+
+/**
+ * Known HTTP request response types
+ */
+const RESPONSE_TYPES = [
+ 'arraybuffer', 'blob', 'document', 'json', 'text',
 ];
 
 /**
  * Default request options
  */
-export const defaultOptions = {
+const DEFAULT_OPTIONS = {
+  async: true,
   body: undefined,
   headers: {},
   password: undefined,
-  responseType: 'json',
+  responseType: '',
   user: undefined,
 };
 
@@ -38,27 +38,20 @@ export const defaultOptions = {
  * @returns {string|Object}
  */
 const getParsedResponse = (xhr) => {
-  switch (xhr.responseType) {
-    // these response types do not require any processing
-    case 'arraybuffer':
-    case 'blob':
-    case 'document':
-    case 'text':
-    // we expect that 'json' responseType is already parsed as well
-    case 'json':
-      return xhr.response;
-    default: {
-      let data;
-
-      try {
-        data = JSON.parse(xhr.responseText);
-      } catch (err) {
-        data = xhr.responseText;
-      }
-
-      return data;
-    }
+  // Return response as-is for know response types
+  if (RESPONSE_TYPES.indexOf(xhr.responseType) !== -1) {
+    return xhr.response;
   }
+
+  let data;
+  // Try to parse JSON response if responseType was not set
+  try {
+    data = JSON.parse(xhr.responseText);
+  } catch (err) {
+    data = xhr.responseText;
+  }
+
+  return data;
 };
 
 /**
@@ -71,15 +64,14 @@ const getParsedResponse = (xhr) => {
 function request(method, url, customOptions = {}) {
   return new Promise((resolve, reject) => {
     // Merge user definded request options with default ones
-    const options = { ...defaultOptions, ...customOptions };
+    const options = { ...DEFAULT_OPTIONS, ...customOptions };
     const xhr = new XMLHttpRequest();
 
-    xhr.open(method, url, true, options.user, options.password);
+    // Open XMLHttpRequest using given options
+    xhr.open(method, url, options.async, options.user, options.password);
 
-    // Override default responseType for XMLHttpRequest if defined
-    if (options.responseType) {
-      xhr.responseType = options.responseType;
-    }
+    // Override default responseType for XMLHttpRequest
+    xhr.responseType = options.responseType;
 
     // Set request headers one by one using XMLHttpRequest.setRequestHeader method
     Object.keys(options.headers).forEach(headerKey => {
@@ -88,12 +80,8 @@ function request(method, url, customOptions = {}) {
 
     xhr.send(options.body);
 
-    // Define readystatechange callback
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState !== 4) {
-        return;
-      }
-
+    // Define onload callback
+    xhr.onload = () => {
       if (xhr.status !== 200) {
         reject(new Error(`[${xhr.status}]`, xhr.response, xhr.statusText));
       } else {
@@ -106,7 +94,7 @@ function request(method, url, customOptions = {}) {
 /**
  * Generate request methods
  */
-const picoAjax = requestMethods.reduce(
+const picoAjax = REQUEST_METHODS.reduce(
   (result, method) => ({
     ...result,
     [method.toLowerCase()]: (...args) => request(method, ...args),

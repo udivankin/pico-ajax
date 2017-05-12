@@ -52,14 +52,15 @@
   "keywords": [
     "ajax",
     "fetch",
-    "axious",
+    "axios",
     "picoajax",
     "pico-ajax",
     "nanoajax",
     "nano-ajax",
     "microajax",
-    "micr-oajax",
-    "superagent"
+    "micro-ajax",
+    "superagent",
+    "XMLHttpRequest"
   ],
   "author": "allx",
   "license": "MIT",

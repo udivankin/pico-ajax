@@ -151,7 +151,7 @@ const picoAjaxWrapper = (requestMethod, requestUrl, requestParams) => {
     )
   }
 
-  return options;
+  return PicoAjax[requestMethod](requestUrl, requestParams);
 };
 
 const Api = Object.keys(PicoAjax).reduce((result, method) => ({
@@ -163,7 +163,7 @@ export default Api;
 ```
 
 This will generate an Api object with all the methods that Pico-Ajax has, but with
-custom progress indicator handler (coolProgressBarHandler) and different signature -
+custom progress indicator handler (coolProgressBarHandler) and different signature
 (requestUrl, requestParams) plus some magic: for GET requests requestParams
 will be stringifyed into URL, for POST request appended into request body.
 

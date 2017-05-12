@@ -26,6 +26,7 @@ const DEFAULT_OPTIONS = {
   async: true,
   body: undefined,
   headers: {},
+  onprogress: null,
   password: undefined,
   responseType: '',
   user: undefined,
@@ -79,6 +80,11 @@ function request(method, url, customOptions = {}) {
     });
 
     xhr.send(options.body);
+
+    // Bind onprogress callback
+    xhr.onprogress = typeof options.onprogress === 'function'
+      ? options.onprogress
+      : null;
 
     // Define onload callback
     xhr.onload = () => {

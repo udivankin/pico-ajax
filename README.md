@@ -1,8 +1,8 @@
 # Pico-Ajax
-Very tiny (less than 1kb compressed) yet functional AJAX library with zero dependencies. It implements XMLHttpRequest returning Promise.
+Very tiny (less than 1kb compressed) yet fully functional AJAX library with zero dependencies. It implements XMLHttpRequest returning Promise.
 
-# Motivation
-What makes Pico-Ajax different is that it's unaware how data is passed. That requires a few more bytes of code to make a request but gives much more control and (more important) better understanding of HTTP requests in exchange.
+## Motivation
+What makes Pico-Ajax different is that it's unaware on how data is passed. That requires a few more bytes of code to make a request, but gives much more control and (more important) better understanding of HTTP requests in exchange.
 
 ## Install
 Via npm:
@@ -18,7 +18,7 @@ import PicoAjax from 'pico-ajax';
 
 Or use as a legacy module (will be available as PicoAjax in a global scope):
 ```html
-<script src="/picoajax.min.js"></script>
+<script src="/scripts/picoajax.min.js"></script>
 ```
 
 ## API
@@ -34,6 +34,7 @@ options: {
   responseType: '',     // Could be 'json|arraybuffer|blob|document|text',
   password: undefined,  // Http auth password
   user: undefined,      // Http auth user
+  onprogress: null,     // XMLHttpRequest onprogress callback
 }
 ```
 
@@ -53,27 +54,19 @@ PicoAjax
 
 Sending data requires a little bit more effort:
 
-**Form data**
-
-Init FormData using DOM form:
 ```javascript
+// Prepare form data using DOM form
 const formData = new FormData(document.querySelector('form'));
-```
 
-**Plain object**
-
-```javascript
+// Or with a plain object
 const foo = { bar: 'baz' };
 const formData = new FormData();
 
 Object.keys(foo).forEach(key => {
   formData.append(key, foo[key]);
 });
-```
 
-Following POST method call:
-
-```javascript
+// Perform POST request
 PicoAjax
   .post('/some/api/', { body: formData })
   .then(result => {
@@ -107,7 +100,7 @@ const formData = new FormData();
 formData.append('userfile', fileInputElement.files[0]);
 
 PicoAjax
-  .post('/some/api/', { body, headers })
+  .post('/some/api/', { body: formData })
   .then(result => {
     console.log(result);
   })
@@ -119,7 +112,60 @@ PicoAjax
 ## Advanced use
 
 If you are going to make quite a few similar requests in your project, you probably
-may want to make one more layer of abstraction over Pico-Ajax.
+may want to make one more layer of abstraction over Pico-Ajax. Here are few lines to
+help you start with:
+```javascript
+import { isPlainObject } from 'lodash';
+import qs from 'qs';
+
+const defaultRequestOptions = {
+  responseType: 'json', // assuming we work with JSON API
+  onprogress: coolProgressBarHandler,
+};
+
+const picoAjaxWrapper = (requestMethod, requestUrl, requestParams) => {
+  if (requestMethod === 'get') {
+    const url = qs.stringify(requestParams);
+    return PicoAjax.get(url, defaultRequestOptions)
+  }
+
+  if (requestMethod === 'post') {
+    let body;
+
+    if (isPlainObject(requestParams)) {
+      body = new FormData();
+
+      Object.keys(requestParams).forEach(key => {
+        body.append(key, requestParams[key]);
+      });
+    } else {
+      body = requestParams;
+    }
+
+    return PicoAjax.post(
+      url,
+      {
+        ...defaultRequestOptions,
+        body,
+      },
+    )
+  }
+
+  return options;
+};
+
+const Api = Object.keys(PicoAjax).reduce((result, method) => ({
+  ...result,
+  [method]: (url, params) => picoAjaxWrapper(method, url, params)
+}), {});
+
+export default Api;
+```
+
+This will generate an Api object with all the methods that Pico-Ajax have, but with
+custom progress indicator handler (coolProgressBarHandler) and different signature -
+(requestUrl, requestParams) plus some magic: for GET requests requestParams
+will be stringifyed into URL, for POST request appended into request body.
 
 ## License
 

@@ -118,11 +118,43 @@ help you start with:
 import { isPlainObject } from 'lodash';
 import qs from 'qs';
 
+/**
+ * Global ajax requests onprogress handler
+ *
+ * @param {Object} event
+ */
+const coolProgressBarHandler = (event) => {
+  console.log(event);
+};
+
+/**
+ * Global API error handler
+ *
+ * @param {Error} error
+ */
+const defaultErrorHandler = (error) => { 
+  console.error(error);
+  throw error; // Enable to catch it further
+};
+
+/**
+ * Default request options for all requests
+ *
+ * @type {Object}
+ */
 const defaultRequestOptions = {
-  responseType: 'json', // Assuming we work with JSON-based API
+  responseType: 'json',                 // Assuming we work with JSON-based API
   onprogress: coolProgressBarHandler,
 };
 
+/**
+ * Request method wrapper
+ *
+ * @param {string} requestMethod
+ * @param {string} requestUrl
+ * @param {*} requestParams
+ * @returns {Promise}
+ */
 const picoAjaxWrapper = (requestMethod, requestUrl, requestParams) => {
   if (requestMethod === 'get') {
     return PicoAjax.get(
@@ -156,16 +188,10 @@ const picoAjaxWrapper = (requestMethod, requestUrl, requestParams) => {
   return PicoAjax[requestMethod](requestUrl, requestParams);
 };
 
+// Generate our pretty near-perfect API module methods
 const Api = Object.keys(PicoAjax).reduce((result, method) => ({
   ...result,
-  [method]: (url, params) => (
-    picoAjaxWrapper(method, url, params)
-      .catch((error) => { // Global API error handler
-         console.error('API error:', error);
-
-         throw error; // Enable to catch it further
-      })
-  )
+  [method]: (url, params) => picoAjaxWrapper(method, url, params).catch(defaultErrorHandler),
 }), {});
 
 export default Api;
@@ -175,6 +201,30 @@ This will generate an Api object with all the methods that Pico-Ajax has, but wi
 custom progress indicator handler (coolProgressBarHandler) and different signature
 (requestUrl, requestParams) plus some magic: for GET requests requestParams
 will be stringifyed into URL, for POST request appended into request body.
+
+Now we can make GET and POST requests like that:
+```javascript
+import Api from '/Api.js';
+
+Api
+  .get('/some/api/', { foo: 'bar', baz: 'qux' })
+  .then(result => {
+    console.log(result);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
+Api
+  .post('/some/api/', { foo: 'bar', baz: 'qux' })
+  .then(result => {
+    console.log(result);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+```
+... plus log errors and display progress in centralized way.
 
 ## License
 

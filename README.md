@@ -119,14 +119,16 @@ import { isPlainObject } from 'lodash';
 import qs from 'qs';
 
 const defaultRequestOptions = {
-  responseType: 'json', // assuming we work with JSON API
+  responseType: 'json', // Assuming we work with JSON-based API
   onprogress: coolProgressBarHandler,
 };
 
 const picoAjaxWrapper = (requestMethod, requestUrl, requestParams) => {
   if (requestMethod === 'get') {
-    const url = qs.stringify(requestParams);
-    return PicoAjax.get(url, defaultRequestOptions)
+    return PicoAjax.get(
+      `${requestUrl}?${qs.stringify(requestParams)}`,
+      defaultRequestOptions,
+    );
   }
 
   if (requestMethod === 'post') {
@@ -156,7 +158,14 @@ const picoAjaxWrapper = (requestMethod, requestUrl, requestParams) => {
 
 const Api = Object.keys(PicoAjax).reduce((result, method) => ({
   ...result,
-  [method]: (url, params) => picoAjaxWrapper(method, url, params)
+  [method]: (url, params) => (
+    picoAjaxWrapper(method, url, params)
+      .catch((error) => { // Global API error handler
+         console.error('API error:', error);
+
+         throw error; // Enable to catch it further
+      })
+  )
 }), {});
 
 export default Api;

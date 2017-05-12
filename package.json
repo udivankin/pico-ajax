@@ -1,6 +1,6 @@
 {
   "name": "pico-ajax",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Very tiny yet functional ajax library written in ES6",
   "main": "dist/index.js",
   "module": "dist/index.js",

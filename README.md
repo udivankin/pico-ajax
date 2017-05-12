@@ -23,7 +23,7 @@ Or use as a legacy module (will be available as PicoAjax in a global scope):
 
 ## API
 
-PicoAjax exposes all known http methods with signature (url, options).
+PicoAjax exposes all known http methods (connect, delete, get, head, options, patch, post and put) with two arguments: 'url' and 'options'.
 
 Default options are:
 ```javascript
@@ -162,7 +162,7 @@ const Api = Object.keys(PicoAjax).reduce((result, method) => ({
 export default Api;
 ```
 
-This will generate an Api object with all the methods that Pico-Ajax have, but with
+This will generate an Api object with all the methods that Pico-Ajax has, but with
 custom progress indicator handler (coolProgressBarHandler) and different signature -
 (requestUrl, requestParams) plus some magic: for GET requests requestParams
 will be stringifyed into URL, for POST request appended into request body.

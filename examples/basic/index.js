@@ -11,11 +11,9 @@ get(`${host}/get?foo=bar`)
     console.error(error);
   });
 
-// Perform post request
+// Perform post request with form data
 post(`${host}/post`, {
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded',
-    },
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
     body: 'foo=bar&baz=qux',
 })
   .then(result => {

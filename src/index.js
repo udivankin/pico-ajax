@@ -15,7 +15,7 @@ const REQUEST_METHODS = [
 /**
  * Known HTTP request response types
  */
-const RESPONSE_TYPES = [
+const XHR_RESPONSE_TYPES = [
  'arraybuffer', 'blob', 'document', 'json', 'text',
 ];
 
@@ -77,7 +77,7 @@ function parseJson(json) {
  */
 function handleBrowserResponse(xhr) {
   // Return response as-is for know response types
-  if (RESPONSE_TYPES.indexOf(xhr.responseType) !== -1) {
+  if (XHR_RESPONSE_TYPES.indexOf(xhr.responseType) !== -1) {
     return xhr.response;
   }
 
@@ -125,6 +125,20 @@ function browserRequest(method, originalUrl, options) {
   });
 }
 
+function decompress(response, responseBuffer) {
+  const contentEncoding = response.headers['content-encoding'];
+
+  if (contentEncoding === 'gzip') {
+    return require('zlib').gunzipSync(responseBuffer);
+  }
+
+  if (contentEncoding === 'deflate') {
+    return require('zlib').deflateSync(responseBuffer);
+  }
+
+  return responseBuffer;
+}
+
 /**
  * HTTP response body interpreter
  *
@@ -136,14 +150,14 @@ function handleServerResponse(response, responseBuffer) {
   const contentType = response.headers['content-type'];
 
   if (contentType && /\/json/.test(contentType)) {
-    return parseJson(responseBuffer.toString('utf8'));
+    return parseJson(decompress(response, responseBuffer).toString('utf8'));
   }
 
   if (contentType && /text\//.test(contentType)) {
-    return responseBuffer.toString('utf8');
+    return decompress(response, responseBuffer).toString('utf8');
   }
 
-  return responseBuffer;
+  return decompress(response, responseBuffer);
 }
 
 /**

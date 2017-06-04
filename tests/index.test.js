@@ -1,4 +1,4 @@
-const PicoAjax = require('../dist/index.js').default;
+const PicoAjax = require('../dist/index.js');
 
 describe('PicoAjax', function() {
   describe('Public methods', function() {

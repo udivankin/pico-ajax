@@ -194,8 +194,13 @@ const getServerRequestOptions = (method, originalUrl, options) => (
     {
       method,
       headers: Object.assign(
-        options.headers,
-        options.body !== undefined ? { 'Content-Length': Buffer.byteLength(options.body) } : {}
+        {
+          'Accept': '*/*',
+          'Accept-encoding': 'gzip, deflate, identity',
+          'User-Agent': 'pico-ajax',
+        },
+        options.body !== undefined ? { 'Content-Length': Buffer.byteLength(options.body) } : {},
+        options.headers
       ),
       timeout: options.timeout,
     },

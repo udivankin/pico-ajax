@@ -1,4 +1,4 @@
-const { get, post } = require('../../src/index.js');
+const { get, post } = require('../../dist/index.js');
 
 const host = 'https://httpbin.org';
 

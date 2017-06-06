@@ -16,7 +16,7 @@ const coolProgressBarHandler = (event) => {
  *
  * @param {Error} error
  */
-const defaultErrorHandler = (error) => { 
+const defaultErrorHandler = (error) => {
   console.error(error);
   throw error; // Enable to catch it further
 };

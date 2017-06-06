@@ -1,12 +1,13 @@
 /**
  * Pico-ajax library main module
  *
+ * @global Object
  * @exports {Object} picoAjax
  */
 
-const { parseJson, parseUrl } = require('./helpers');
-const { browserRequest } = require('./browser');
-const { serverRequest } = require('./server');
+import { parseJson, parseUrl } from './helpers';
+import { browserRequest } from './browser';
+import { serverRequest } from './server';
 
  /**
   * Known HTTP request methods
@@ -64,4 +65,4 @@ const picoAjax = REQUEST_METHODS.reduce(
   {}
 );
 
-module.exports = picoAjax;
+export default picoAjax;

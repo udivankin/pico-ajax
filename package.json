@@ -7,21 +7,20 @@
   "directories": {
     "test": "tests"
   },
-  "dependencies": {},
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-latest": "^6.24.1",
-    "babel-preset-stage-3": "^6.24.1",
     "jasmine": "^2.6.0",
     "jasmine-ajax": "^3.3.1",
     "rollup": "^0.41.6",
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^2.0.1"
+    "rollup-plugin-uglify": "^2.0.1",
+    "rollup-watch": "^4.0.0"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c -w",
     "test": "jasmine JASMINE_CONFIG_PATH=jasmine.json"
   },
   "repository": {

@@ -5,7 +5,7 @@
  * @exports {Object}
  */
 
-const { parseJson } = require('./helpers');
+import { parseJson } from './helpers';
 
 /**
  * Try to parse response
@@ -29,7 +29,7 @@ function handleBrowserResponse(xhr) {
  * @param {Object} options request options
  * @returns {Promise}
  */
-function browserRequest(method, originalUrl, options) {
+export function browserRequest(method, originalUrl, options) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 
@@ -62,5 +62,3 @@ function browserRequest(method, originalUrl, options) {
     };
   });
 }
-
-module.exports = { browserRequest };

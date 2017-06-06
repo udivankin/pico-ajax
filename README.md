@@ -1,8 +1,11 @@
 # Pico-Ajax
-Very tiny (less than 1kb compressed) yet fully functional AJAX library with zero dependencies. It implements XMLHttpRequest returning Promise.
+Universal, very tiny (less than 1kb compressed) yet fully functional AJAX library with zero dependencies. It implements browser XMLHttpRequest and Node.js http module returning Promise.
 
 ## Motivation
-What makes Pico-Ajax different is that it's unaware on how data is passed. That requires a few more bytes of code to make a request, but gives much more control and (more important) better understanding of HTTP requests in exchange.
+What makes Pico-Ajax different is that it's unaware on how data is passed. That requires a few more bytes of code to make a request, but gives much more control and (more important) better understanding of HTTP requests in exchange. This also makes it perfect for building your own DIY API module.
+
+## Limitations
+Since server implementation is mostly synchronous it's not recommended to use PicoAjax in loaded projects.
 
 ## Install
 Via npm:
@@ -114,35 +117,6 @@ PicoAjax
 If you are going to make quite a few similar requests in your project, you probably
 may want to make one more layer of abstraction over Pico-Ajax. Please refer to api-example.js
 module in examples directory.
-
-Example implementation will generate an Api object with all the methods that Pico-Ajax has,
-but with custom progress indicator handler (coolProgressBarHandler) and different signature
-(requestUrl, requestParams) plus some magic: for GET requests requestParams
-will be stringifyed into URL, for POST request appended into request body.
-
-Now we can make GET and POST requests like that:
-```javascript
-import Api from '/Api.js';
-
-Api
-  .get('/some/api/', { foo: 'bar', baz: 'qux' })
-  .then(result => {
-    console.log(result);
-  })
-  .catch(error => {
-    console.error(error);
-  });
-
-Api
-  .post('/some/api/', { foo: 'bar', baz: 'qux' })
-  .then(result => {
-    console.log(result);
-  })
-  .catch(error => {
-    console.error(error);
-  });
-```
-... plus log errors and display progress in centralized way.
 
 ## License
 

@@ -67,17 +67,62 @@ export function decompress(response, responseBuffer) {
   return responseBuffer;
 }
 
+/**
+ * Response wrapper for redirects
+ */
+class WrappedResponse {
+  constructor(response) {
+    this.response = response;
+  }
+  on(eventName, callback) {
+    console.log('on', eventName, callback);
+
+    if (eventName === 'data') {
+      this.response.on(eventName, callback);
+    }
+
+    if (eventName === 'end') {
+      this.headers = this.response.headers;
+      this.statusCode = this.response.statusCode;
+      this.statusText = this.response.statusText;
+      this.response.on(eventName, callback);
+    }
+  };
+};
+
+/**
+ * Request wrapper for redirects
+ */
+class WrappedRequest {
+  constructor(request) {
+    this.request = request;
+  }
+  on(...args) {
+    return this.request.on(...args);
+  }
+  end(...args) {
+    return this.request.end(...args);
+  }
+  write(...args) {
+    return this.request.write(...args);
+  }
+}
 
 /**
  * Follow redirect helper
  *
- * @param {string} requestUrl
+ * @param {Object} originalRequestOptions
+ * @param {function} originalResponseHandler
  * @returns {Object}
  */
-export function followRedirects(requestOptions, responseHandler) {
-    console.log(requestOptions);
-    const requestMethod = /^https/.test(requestOptions.href) ? https.request : http.request;
+export function followRedirects(originalRequestOptions, originalResponseHandler) {
+  const requestMethod = /^https/.test(originalRequestOptions.href) ? https.request : http.request;
 
-    // TODO
-    return requestMethod(requestOptions, responseHandler);
+  const wrappedResponseHandler = (response) => {
+    originalResponseHandler(new WrappedResponse(response));
+  }
+
+  const request = requestMethod(originalRequestOptions, wrappedResponseHandler);
+
+  return new WrappedRequest(request);
 }

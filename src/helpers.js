@@ -7,8 +7,10 @@
 
 import http from 'http';
 import https from 'https';
-import { parse as nodeParseUrl } from 'url';
+import { parse as nodeParseUrl, resolve as nodeResolveUrl } from 'url';
 import zlib from 'zlib';
+
+const MAX_REDIRECTS = 21;
 
 /**
  * Try to parse json
@@ -33,14 +35,16 @@ export function parseJson(json) {
  * @param {string} requestUrl
  * @returns {Object}
  */
-export function parseUrl(requestUrl) {
+export function parseUrl(requestUrl, baseUrl) {
   // Modern browsers and Node v7+
   if (typeof URL !== 'undefined') {
-    return new URL(requestUrl);
+    return baseUrl ? new URL(requestUrl, baseUrl) : new URL(baseUrl);
   }
   // Node up to v6
   if (typeof global !== 'undefined') {
-    return nodeParseUrl(requestUrl);
+    return baseUrl
+      ? nodeParseUrl(nodeResolveUrl(baseUrl, requestUrl))
+      : nodeParseUrl(requestUrl);
   }
 
   return {};
@@ -68,27 +72,14 @@ export function decompress(response, responseBuffer) {
 }
 
 /**
- * Response wrapper for redirects
+ * Request method getter
+ *
+ * @param {string} requestOptions
+ * @returns {function}
  */
-class WrappedResponse {
-  constructor(response) {
-    this.response = response;
-  }
-  on(eventName, callback) {
-    console.log('on', eventName, callback);
-
-    if (eventName === 'data') {
-      this.response.on(eventName, callback);
-    }
-
-    if (eventName === 'end') {
-      this.headers = this.response.headers;
-      this.statusCode = this.response.statusCode;
-      this.statusText = this.response.statusText;
-      this.response.on(eventName, callback);
-    }
-  };
-};
+export function getRequestMethod(requestOptions) {
+  return /^https/.test(requestOptions.href) ? https.request : http.request;
+}
 
 /**
  * Request wrapper for redirects
@@ -115,14 +106,30 @@ class WrappedRequest {
  * @param {function} originalResponseHandler
  * @returns {Object}
  */
-export function followRedirects(originalRequestOptions, originalResponseHandler) {
-  const requestMethod = /^https/.test(originalRequestOptions.href) ? https.request : http.request;
-
+export function followRedirects(originalRequestOptions, originalResponseHandler, redirectCount = 0) {
   const wrappedResponseHandler = (response) => {
-    originalResponseHandler(new WrappedResponse(response));
+    const { headers, statusCode, statusText } = response;
+
+    // Follow redirects until we get non-redirect response code
+    if (statusCode >= 300 && statusCode < 400) {
+      if (redirectCount >= MAX_REDIRECTS) {
+        response.statusText = 'Too many redirects';
+        originalResponseHandler(response);
+      } else {
+        const requestOptions = Object.assign(
+          originalRequestOptions,
+          parseUrl(headers.location, `${originalRequestOptions.protocol}//${originalRequestOptions.host}`)
+        );
+        followRedirects(requestOptions, originalResponseHandler, redirectCount + 1).end();
+      }
+
+      return;
+    }
+
+    originalResponseHandler(response);
   }
 
-  const request = requestMethod(originalRequestOptions, wrappedResponseHandler);
-
-  return new WrappedRequest(request);
+  return new WrappedRequest(
+    getRequestMethod(originalRequestOptions)(originalRequestOptions, wrappedResponseHandler)
+  );
 }

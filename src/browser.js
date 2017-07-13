@@ -8,6 +8,13 @@
 import { parseJson } from './helpers';
 
 /**
+ * Known HTTP request response types
+ */
+const XHR_RESPONSE_TYPES = [
+ 'arraybuffer', 'blob', 'document', 'json', 'text',
+];
+
+/**
  * Try to parse response
  *
  * @param {Object} xhr Xhr request object

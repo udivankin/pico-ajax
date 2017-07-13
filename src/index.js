@@ -17,13 +17,6 @@ const REQUEST_METHODS = [
 ];
 
 /**
- * Known HTTP request response types
- */
-const XHR_RESPONSE_TYPES = [
- 'arraybuffer', 'blob', 'document', 'json', 'text',
-];
-
-/**
  * Default request options
  */
 const DEFAULT_OPTIONS = {

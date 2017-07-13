@@ -7,5 +7,16 @@
 </head>
 <body>
   <div id="root" style="height: 100%"></div>
-</body>
+  <script src="./../../dist/index.js"></script>
+  <script type="text/javascript">
+    // Perform simple get request
+    PicoAjax.get(`${host}/get?foo=bar`)
+      .then(result => {
+        console.log('GET request response: ', result);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  </script>
+</body
 </html>

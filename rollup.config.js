@@ -5,7 +5,8 @@ import uglify from 'rollup-plugin-uglify';
 export default {
   entry: 'src/index.js',
   format: 'umd',
-  moduleName: "pico-ajax",
+  moduleName: 'pico-ajax',
+  footer: 'if (typeof window !== "undefined") { window.PicoAjax = window["pico-ajax"]; }',
   plugins: [
     resolve({
       jsnext: true,

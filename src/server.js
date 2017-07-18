@@ -48,7 +48,7 @@ function createServerResponseHandler(resolve, reject) {
       const { headers, statusCode, statusText } = response;
       // Resolve on ok
       if (statusCode >= 200 && statusCode < 300) {
-        return resolve(handleServerResponse(response, responseBuffer));
+        return resolve(handleServerResponse(response, Buffer.concat(responseBuffer)));
       }
       // Reject on error
       reject(new Error(`${statusCode} ${statusText}`));

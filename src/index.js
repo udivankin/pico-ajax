@@ -28,6 +28,7 @@ const DEFAULT_OPTIONS = {
   responseType: '',
   timeout: 0,
   username: undefined,
+  withCredetials: undefined,
 };
 
 /**

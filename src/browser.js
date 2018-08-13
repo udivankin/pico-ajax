@@ -32,7 +32,7 @@ function handleBrowserResponse(xhr) {
 /**
  * Make a request
  *
- * @param {string} url Url
+ * @param {string} method HTTP Method
  * @param {Object} options request options
  * @returns {Promise}
  */
@@ -43,9 +43,20 @@ export function browserRequest(method, originalUrl, options) {
     // Open XMLHttpRequest using given options
     xhr.open(method, originalUrl, options.async, options.username, options.password);
 
-    // Override default timeout and responseType for XMLHttpRequest
-    xhr.responseType = options.responseType;
-    xhr.timeout = options.timeout;
+    // Override default timeout, responseType and withCredentials for XMLHttpRequest
+    const { responseType, timeout, withCredentials } = options;
+
+    if (typeof responseType !== 'undefined') {
+      xhr.responseType = options.responseType;
+    }
+
+    if (typeof timeout !== 'undefined') {
+      xhr.timeout = options.timeout;
+    }
+
+    if (typeof withCredentials !== 'undefined') {
+      xhr.withCredentials = options.withCredentials;
+    }
 
     // Set request headers one by one using XMLHttpRequest.setRequestHeader method
     Object.keys(options.headers).forEach(headerKey => {
@@ -62,7 +73,7 @@ export function browserRequest(method, originalUrl, options) {
     // Define onload callback
     xhr.onload = () => {
       if (xhr.status !== 200) {
-        reject(new Error(`[${xhr.status}]`, xhr.response, xhr.statusText));
+        reject(new Error(`[${xhr.status}] ${xhr.statusText} ${xhr.response}`));
       } else {
         resolve(handleBrowserResponse(xhr));
       }

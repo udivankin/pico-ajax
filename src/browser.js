@@ -46,15 +46,15 @@ export function browserRequest(method, originalUrl, options) {
     // Override default timeout, responseType and withCredentials for XMLHttpRequest
     const { responseType, timeout, withCredentials } = options;
 
-    if (typeof responseType !== 'undefined') {
+    if (responseType !== undefined) { // default option value is undefined
       xhr.responseType = options.responseType;
     }
 
-    if (typeof timeout !== 'undefined') {
+    if (timeout !== undefined) { // default option value is undefined
       xhr.timeout = options.timeout;
     }
 
-    if (typeof withCredentials !== 'undefined') {
+    if (withCredentials !== undefined) { // default option value is undefined
       xhr.withCredentials = options.withCredentials;
     }
 

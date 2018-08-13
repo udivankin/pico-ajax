@@ -8,9 +8,18 @@
 import { decompress, followRedirects, parseJson, parseUrl } from './helpers';
 
 /**
+ * Default request headers
+ */
+const DEFAULT_HEADERS = {
+  'Accept': '*/*',
+  'Accept-encoding': 'gzip, deflate, identity',
+  'User-Agent': 'pico-ajax',
+};
+
+/**
  * HTTP response body interpreter
  *
- * @param {Stream} response Response stream
+ * @param {ClientResponse} response Response object
  * @param {Buffer} responseBuffer Response buffer
  * @returns {*} Response
  */
@@ -33,7 +42,7 @@ function handleServerResponse(response, responseBuffer) {
  * HTTP response handler creator
  *
  * @param {function} resolve Promise.resolve method
- * @param {function} resolve Promise.reject method
+ * @param {function} reject Promise.reject method
  * @returns {function} Response handeler
  */
 function createServerResponseHandler(resolve, reject) {
@@ -69,15 +78,12 @@ const getServerRequestOptions = (method, originalUrl, options) => (
     {
       method,
       headers: Object.assign(
-        {
-          'Accept': '*/*',
-          'Accept-encoding': 'gzip, deflate, identity',
-          'User-Agent': 'pico-ajax',
-        },
+        {},
+        DEFAULT_HEADERS,
         options.body !== undefined ? { 'Content-Length': Buffer.byteLength(options.body) } : {},
         options.headers
       ),
-      timeout: options.timeout,
+      timeout: options.timeout || 0,
     },
     parseUrl(originalUrl),
     options.username && options.password

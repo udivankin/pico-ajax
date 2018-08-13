@@ -5,7 +5,6 @@
  * @exports {Object} picoAjax
  */
 
-import { parseJson, parseUrl } from './helpers';
 import { browserRequest } from './browser';
 import { serverRequest } from './server';
 
@@ -26,7 +25,7 @@ const DEFAULT_OPTIONS = {
   onprogress: null,
   password: undefined,
   responseType: '',
-  timeout: 0,
+  timeout: undefined,
   username: undefined,
   withCredentials: undefined,
 };
@@ -41,7 +40,7 @@ const DEFAULT_OPTIONS = {
  */
 function request(method, url, customOptions = {}) {
   // Merge user definded request options with default ones
-  const options = Object.assign(DEFAULT_OPTIONS, customOptions);
+  const options = Object.assign({}, DEFAULT_OPTIONS, customOptions);
 
   return (typeof global !== 'undefined') && (typeof window === 'undefined')
     ? serverRequest(method, url, options)
@@ -53,7 +52,7 @@ function request(method, url, customOptions = {}) {
  */
 const picoAjax = REQUEST_METHODS.reduce(
   (result, method) => {
-    result[method.toLowerCase()] = (...args) => request(method, ...args);
+    result[method.toLowerCase()] = (url, options) => request(method, url, options);
     return result;
   },
   {}

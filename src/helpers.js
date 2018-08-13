@@ -15,7 +15,8 @@ const MAX_REDIRECTS = 21;
 /**
  * Try to parse json
  *
- * @param {*} json
+ * @param {string} json
+ * @returns {Object}
  */
 export function parseJson(json) {
   let data;
@@ -33,6 +34,7 @@ export function parseJson(json) {
  * Universal url parser
  *
  * @param {string} requestUrl
+ * @param {string} [baseUrl]
  * @returns {Object}
  */
 export function parseUrl(requestUrl, baseUrl) {
@@ -53,7 +55,7 @@ export function parseUrl(requestUrl, baseUrl) {
 /**
  * Decompress http response
  *
- * @param {Stream} response Response stream
+ * @param {http.ClientResponse} response Response stream
  * @param {Buffer} responseBuffer Response buffer
  * @returns {*} responseBuffer
  */
@@ -74,7 +76,7 @@ export function decompress(response, responseBuffer) {
 /**
  * Request method getter
  *
- * @param {string} requestOptions
+ * @param {Object} requestOptions
  * @returns {function}
  */
 export function getRequestMethod(requestOptions) {

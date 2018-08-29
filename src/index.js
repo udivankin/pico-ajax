@@ -1,22 +1,54 @@
 /**
  * Pico-ajax library main module
  *
- * @global Object
- * @exports {Object} picoAjax
+ * @exports {PicoAjax} 
  */
+
+ /**
+  * @typedef {Object} RequestOptions
+  * @property {boolean} async
+  * @property {string} body
+  * @property {Object} headers
+  * @property {function} onprogress
+  * @property {string} password
+  * @property {string} responseType
+  * @property {number} timeout
+  * @property {string} username
+  * @property {boolean} withCredentials
+  */
+ 
+ /**
+  * @typedef {function} HttpRequest
+  * @property {string} url
+  * @property {RequestOptions} options
+  */
+
+ /**
+  * @typedef {Object} PicoAjax
+  * @property {HttpRequest} get
+  * @property {HttpRequest} post
+  * @property {HttpRequest} put
+  * @property {HttpRequest} delete
+  * @property {HttpRequest} head
+  * @property {HttpRequest} patch
+  * @property {HttpRequest} connect
+  * @property {HttpRequest} options
+  */
 
 import { browserRequest } from './browser';
 import { serverRequest } from './server';
 
- /**
-  * Known HTTP request methods
-  */
+/**
+ * Known HTTP request methods
+ */
 const REQUEST_METHODS = [
   'CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT',
 ];
 
 /**
  * Default request options
+ * 
+ * @type {RequestOptions}
  */
 const DEFAULT_OPTIONS = {
   async: true,
@@ -40,7 +72,7 @@ const DEFAULT_OPTIONS = {
  */
 function request(method, url, customOptions = {}) {
   // Merge user definded request options with default ones
-  const options = Object.assign({}, DEFAULT_OPTIONS, customOptions);
+  const options = { ...DEFAULT_OPTIONS, ...customOptions };
 
   return (typeof global !== 'undefined') && (typeof window === 'undefined')
     ? serverRequest(method, url, options)

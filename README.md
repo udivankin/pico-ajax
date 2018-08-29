@@ -1,5 +1,5 @@
 # Pico-Ajax
-Universal, very tiny (less than 1kb compressed) yet fully functional AJAX library with zero dependencies. It implements browser XMLHttpRequest and Node.js http module returning Promise.
+Universal, very tiny (less than 2kb compressed) yet fully functional AJAX library with zero dependencies. It implements browser XMLHttpRequest and Node.js http module returning Promise.
 
 ## Motivation
 What makes Pico-Ajax different is that it's unaware on how data is passed. That requires a few more bytes of code to make a request, but gives much more control and (more important) better understanding of HTTP requests in exchange. This also makes it perfect for building your own DIY API module.

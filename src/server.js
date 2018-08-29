@@ -1,7 +1,6 @@
 /**
  * Pico-ajax library server adapter
  *
- * @global Buffer
  * @exports {Object}
  */
 
@@ -73,24 +72,24 @@ function createServerResponseHandler(resolve, reject) {
  * @param {Object} options request options
  * @returns {Promise}
  */
-const getServerRequestOptions = (method, originalUrl, options) => (
-  Object.assign(
-    {
-      method,
-      headers: Object.assign(
-        {},
-        DEFAULT_HEADERS,
-        options.body !== undefined ? { 'Content-Length': Buffer.byteLength(options.body) } : {},
-        options.headers
-      ),
-      timeout: options.timeout || 0,
+const getServerRequestOptions = (method, originalUrl, options) => {
+  const opts = {
+    method,
+    headers: {
+      ...DEFAULT_HEADERS,
+      ...options.body !== undefined ? { 'Content-Length': Buffer.byteLength(options.body) } : {},
+      ...options.headers
     },
-    parseUrl(originalUrl),
-    options.username && options.password
+    timeout: options.timeout || 0,
+    ...parseUrl(originalUrl),
+    ...options.username && options.password
       ? { auth: `${options.username}:${options.password}`}
       : {}
-  )
-);
+  }
+
+  return opts;
+};
+
 
 /**
  * Make a request on nodejs

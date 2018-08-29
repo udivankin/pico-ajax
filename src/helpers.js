@@ -1,13 +1,9 @@
 /**
  * Pico-ajax library heloers module
- *
- * @global JSON, URL
- * @exports {Object} picoAjax
  */
 
 import http from 'http';
 import https from 'https';
-import { parse as nodeParseUrl, resolve as nodeResolveUrl } from 'url';
 import zlib from 'zlib';
 
 const MAX_REDIRECTS = 21;
@@ -38,18 +34,18 @@ export function parseJson(json) {
  * @returns {Object}
  */
 export function parseUrl(requestUrl, baseUrl) {
-  // Modern browsers and Node v7+
-  if (typeof URL !== 'undefined') {
-    return baseUrl ? new URL(requestUrl, baseUrl) : new URL(baseUrl);
-  }
-  // Node up to v6
-  if (typeof global !== 'undefined') {
-    return baseUrl
-      ? nodeParseUrl(nodeResolveUrl(baseUrl, requestUrl))
-      : nodeParseUrl(requestUrl);
-  }
+  const parsedUrl = baseUrl ? new URL(requestUrl, baseUrl) : new URL(requestUrl);
+  const auth = parsedUrl.username && parsedUrl.password
+    ? { auth : `${parsedUrl.username}:${parsedUrl.password}`}
+    : {};
 
-  return {};
+  return {
+    hostname: parsedUrl.hostname,
+    path: parsedUrl.pathname + parsedUrl.search,
+    protocol: parsedUrl.protocol,
+    ...parsedUrl.port ? { port: parsedUrl.port } : {},
+    ...auth,
+  };
 }
 
 /**
@@ -80,7 +76,8 @@ export function decompress(response, responseBuffer) {
  * @returns {function}
  */
 export function getRequestMethod(requestOptions) {
-  return /^https/.test(requestOptions.href) ? https.request : http.request;
+  console.log(requestOptions);
+  return requestOptions.protocol === 'https:' ? https.request : http.request;
 }
 
 /**
@@ -118,10 +115,10 @@ export function followRedirects(originalRequestOptions, originalResponseHandler,
         response.statusText = 'Too many redirects';
         originalResponseHandler(response);
       } else {
-        const requestOptions = Object.assign(
-          originalRequestOptions,
-          parseUrl(headers.location, `${originalRequestOptions.protocol}//${originalRequestOptions.host}`)
-        );
+        const requestOptions = {
+          ...originalRequestOptions,
+          ...parseUrl(headers.location, `${originalRequestOptions.protocol}//${originalRequestOptions.host}`)
+        };
         followRedirects(requestOptions, originalResponseHandler, redirectCount + 1).end();
       }
 

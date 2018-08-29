@@ -11,7 +11,7 @@ describe('PicoAjax', function() {
     });
 
     it('should not have other public properties', function() {
-      for (libraryProperty in PicoAjax) {
+      for (const libraryProperty in PicoAjax) {
         expect(PUBLIC_METHODS.indexOf(libraryProperty)).toBeGreaterThan(-1);
       }
     });

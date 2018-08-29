@@ -1,7 +1,5 @@
 /**
  * Pico-ajax library browser adapter
- *
- * @global Promise, JSON, XMLHttpRequest, Error, Object
  * @exports {Object}
  */
 

@@ -1,5 +1,5 @@
 /**
- * Pico-ajax library heloers module
+ * Pico-ajax library helpers
  */
 
 import http from 'http';
@@ -7,6 +7,19 @@ import https from 'https';
 import zlib from 'zlib';
 
 const MAX_REDIRECTS = 21;
+
+/**
+ * Compose auth request header
+ *
+ * @param {string} [username]
+ * @param {string} [password]
+ * @returns {Object}
+ */
+export function composeAuthHeader(username, password) {
+  return username && password
+    ? { auth: `${username}:${password}` }
+    : {};
+}
 
 /**
  * Try to parse json
@@ -34,17 +47,16 @@ export function parseJson(json) {
  * @returns {Object}
  */
 export function parseUrl(requestUrl, baseUrl) {
-  const parsedUrl = baseUrl ? new URL(requestUrl, baseUrl) : new URL(requestUrl);
-  const auth = parsedUrl.username && parsedUrl.password
-    ? { auth : `${parsedUrl.username}:${parsedUrl.password}`}
-    : {};
+  const { hostname, pathname, search, protocol, port, username, password } = baseUrl
+    ? new URL(requestUrl, baseUrl)
+    : new URL(requestUrl);
 
   return {
-    hostname: parsedUrl.hostname,
-    path: parsedUrl.pathname + parsedUrl.search,
-    protocol: parsedUrl.protocol,
-    ...parsedUrl.port ? { port: parsedUrl.port } : {},
-    ...auth,
+    hostname,
+    path: pathname + search,
+    protocol,
+    ...port ? { port } : {},
+    ...composeAuthHeader(username, password),
   };
 }
 

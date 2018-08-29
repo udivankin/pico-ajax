@@ -1,6 +1,5 @@
 /**
  * Pico-ajax library browser adapter
- * @exports {Object}
  */
 
 import { parseJson } from './helpers';

@@ -1,10 +1,8 @@
 /**
  * Pico-ajax library server adapter
- *
- * @exports {Object}
  */
 
-import { decompress, followRedirects, parseJson, parseUrl } from './helpers';
+import { composeAuthHeader, decompress, followRedirects, parseJson, parseUrl } from './helpers';
 
 /**
  * Default request headers
@@ -72,24 +70,17 @@ function createServerResponseHandler(resolve, reject) {
  * @param {Object} options request options
  * @returns {Promise}
  */
-const getServerRequestOptions = (method, originalUrl, options) => {
-  const opts = {
-    method,
-    headers: {
-      ...DEFAULT_HEADERS,
-      ...options.body !== undefined ? { 'Content-Length': Buffer.byteLength(options.body) } : {},
-      ...options.headers
-    },
-    timeout: options.timeout || 0,
-    ...parseUrl(originalUrl),
-    ...options.username && options.password
-      ? { auth: `${options.username}:${options.password}`}
-      : {}
-  }
-
-  return opts;
-};
-
+const getServerRequestOptions = (method, originalUrl, options) => ({
+  method,
+  headers: {
+    ...DEFAULT_HEADERS,
+    ...options.body !== undefined ? { 'Content-Length': Buffer.byteLength(options.body) } : {},
+    ...options.headers
+  },
+  timeout: options.timeout || 0,
+  ...parseUrl(originalUrl),
+  ...composeAuthHeader(options.username, options.password), // auth derived from options is preferred over auth that came from URL
+});
 
 /**
  * Make a request on nodejs

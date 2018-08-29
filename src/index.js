@@ -1,20 +1,18 @@
 /**
  * Pico-ajax library main module
- *
- * @exports {PicoAjax} 
  */
 
  /**
   * @typedef {Object} RequestOptions
-  * @property {boolean} async
+  * @property {boolean} async (Browser-specific)
   * @property {string} body
   * @property {Object} headers
-  * @property {function} onprogress
+  * @property {function} onprogress (Browser-specific)
   * @property {string} password
-  * @property {string} responseType
+  * @property {string} responseType (Browser-specific)
   * @property {number} timeout
   * @property {string} username
-  * @property {boolean} withCredentials
+  * @property {boolean} withCredentials (Browser-specific)
   */
  
  /**

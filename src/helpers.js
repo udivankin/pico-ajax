@@ -76,7 +76,6 @@ export function decompress(response, responseBuffer) {
  * @returns {function}
  */
 export function getRequestMethod(requestOptions) {
-  console.log(requestOptions);
   return requestOptions.protocol === 'https:' ? https.request : http.request;
 }
 

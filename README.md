@@ -1,4 +1,4 @@
-# Pico-Ajax
+# PicoAjax
 Universal, very tiny (less than 2kb compressed) yet fully functional AJAX library with zero dependencies. It implements browser XMLHttpRequest and Node.js http module returning Promise.
 
 ## Motivation
@@ -31,13 +31,15 @@ PicoAjax exposes all known http methods (connect, delete, get, head, options, pa
 Default options are:
 ```javascript
 options: {
-  async: true,          // Could be helpful since e.g. workers lack async support
-  body: undefined,      // Request body, see details below
-  headers: {},          // Request headers, see details below
-  responseType: '',     // Could be 'json|arraybuffer|blob|document|text',
-  password: undefined,  // Http auth password
-  user: undefined,      // Http auth user
-  onprogress: null,     // XMLHttpRequest onprogress callback
+  body: undefined,        // Request body, see details below
+  headers: {},            // Request headers, see details below
+  password: undefined,    // HTTP auth password
+  user: undefined,        // HTTP auth user
+  timeout: undefined,     // Request timeout
+  responseType: '',       // [Browser-only] Could be 'json|arraybuffer|blob|document|text',
+  async: true,            // [Browser-only] Could be helpful since e.g. workers lack async support
+  onProgress: undefined,  // [Browser-only] XMLHttpRequest onprogress callback
+  withCredentials: false, // [Browser-only] Whether should send cookies with cross-origin requests
 }
 ```
 

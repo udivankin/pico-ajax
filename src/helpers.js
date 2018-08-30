@@ -82,16 +82,6 @@ export function decompress(response, responseBuffer) {
 }
 
 /**
- * Request method getter
- *
- * @param {Object} requestOptions
- * @returns {function}
- */
-export function getRequestMethod(requestOptions) {
-  return requestOptions.protocol === 'https:' ? https.request : http.request;
-}
-
-/**
  * Request wrapper for redirects
  */
 class WrappedRequest {
@@ -112,7 +102,7 @@ class WrappedRequest {
 /**
  * Follow redirect helper
  *
- * @param {Object} originalRequestOptions
+ * @param {http.RequestOptions} originalRequestOptions
  * @param {function} originalResponseHandler
  * @returns {Object}
  */
@@ -139,7 +129,7 @@ export function followRedirects(originalRequestOptions, originalResponseHandler,
     originalResponseHandler(response);
   }
 
-  return new WrappedRequest(
-    getRequestMethod(originalRequestOptions)(originalRequestOptions, wrappedResponseHandler)
-  );
+  return new WrappedRequest(originalRequestOptions.protocol === 'https:'
+    ? https.request(originalRequestOptions, wrappedResponseHandler)
+    : http.request(originalRequestOptions, wrappedResponseHandler)); 
 }

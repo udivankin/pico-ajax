@@ -5,6 +5,10 @@
 import { parseJson } from './helpers';
 
 /**
+ * @typedef {import('./index').PicoAjaxRequestOptions} PicoAjaxRequestOptions
+ */
+
+/**
  * Known HTTP request response types
  */
 const XHR_RESPONSE_TYPES = [
@@ -30,7 +34,7 @@ function handleBrowserResponse(xhr) {
  * Make a request
  *
  * @param {string} method HTTP Method
- * @param {Object} options request options
+ * @param {PicoAjaxRequestOptions} options request options
  * @returns {Promise}
  */
 export function browserRequest(method, originalUrl, options) {
@@ -41,7 +45,7 @@ export function browserRequest(method, originalUrl, options) {
     xhr.open(method, originalUrl, options.async, options.username, options.password);
 
     // Override default timeout, responseType and withCredentials for XMLHttpRequest
-    const { responseType, timeout, withCredentials } = options;
+    const { onProgress, responseType, timeout, withCredentials } = options;
 
     if (responseType !== undefined) { // default option value is undefined
       xhr.responseType = options.responseType;
@@ -63,17 +67,17 @@ export function browserRequest(method, originalUrl, options) {
     xhr.send(options.body);
 
     // Bind onprogress callback
-    xhr.onprogress = typeof options.onprogress === 'function'
-      ? options.onprogress
-      : null;
+    if (typeof onProgress === 'function') {
+      xhr.addEventListener('progress', onProgress.bind(xhr));
+    }
 
     // Define onload callback
-    xhr.onload = () => {
+    xhr.addEventListener('load', () => {
       if (xhr.status !== 200) {
         reject(new Error(`[${xhr.status}] ${xhr.statusText} ${xhr.response}`));
       } else {
         resolve(handleBrowserResponse(xhr));
       }
-    };
+    });
   });
 }

@@ -3,22 +3,22 @@
  */
 
  /**
-  * @typedef {Object} RequestOptions
-  * @property {boolean} async (Browser-specific)
-  * @property {string} body
-  * @property {Object} headers
-  * @property {function} onprogress (Browser-specific)
-  * @property {string} password
-  * @property {string} responseType (Browser-specific)
-  * @property {number} timeout
-  * @property {string} username
-  * @property {boolean} withCredentials (Browser-specific)
+  * @typedef {Object} PicoAjaxRequestOptions
+  * @property {string} [body]
+  * @property {Object} [headers]
+  * @property {string} [username]
+  * @property {string} [password]
+  * @property {number} [timeout]
+  * @property {boolean} [async] (Browser-specific)
+  * @property {function} [onProgress] (Browser-specific)
+  * @property {XMLHttpRequestResponseType} [responseType] (Browser-specific)
+  * @property {boolean} [withCredentials] (Browser-specific)
   */
  
  /**
   * @typedef {function} HttpRequest
   * @property {string} url
-  * @property {RequestOptions} options
+  * @property {PicoAjaxRequestOptions} [options]
   */
 
  /**
@@ -46,17 +46,17 @@ const REQUEST_METHODS = [
 /**
  * Default request options
  * 
- * @type {RequestOptions}
+ * @type {PicoAjaxRequestOptions}
  */
 const DEFAULT_OPTIONS = {
-  async: true,
   body: undefined,
   headers: {},
-  onprogress: null,
-  password: undefined,
-  responseType: '',
-  timeout: undefined,
   username: undefined,
+  password: undefined,
+  timeout: undefined,
+  async: true,
+  onProgress: null,
+  responseType: '',
   withCredentials: undefined,
 };
 

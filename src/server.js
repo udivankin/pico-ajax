@@ -2,7 +2,12 @@
  * Pico-ajax library server adapter
  */
 
+import http from 'http';
 import { composeAuthHeader, decompress, followRedirects, parseJson, parseUrl } from './helpers';
+
+/**
+ * @typedef {import('./index').PicoAjaxRequestOptions} PicoAjaxRequestOptions
+ */
 
 /**
  * Default request headers
@@ -16,7 +21,7 @@ const DEFAULT_HEADERS = {
 /**
  * HTTP response body interpreter
  *
- * @param {ClientResponse} response Response object
+ * @param {http.ClientResponse} response Response object
  * @param {Buffer} responseBuffer Response buffer
  * @returns {*} Response
  */
@@ -67,8 +72,8 @@ function createServerResponseHandler(resolve, reject) {
  *
  * @param {string} method HTTP method
  * @param {string} originalUrl Url
- * @param {Object} options request options
- * @returns {Promise}
+ * @param {PicoAjaxRequestOptions} options Request options
+ * @returns {http.RequestOptions}
  */
 const getServerRequestOptions = (method, originalUrl, options) => ({
   method,

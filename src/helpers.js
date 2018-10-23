@@ -5,6 +5,7 @@
 import http from 'http';
 import https from 'https';
 import zlib from 'zlib';
+import { URL } from 'url';
 
 const MAX_REDIRECTS = 21;
 
@@ -40,16 +41,16 @@ export function parseJson(json) {
 }
 
 /**
- * Universal url parser
+ * Server-only URL parser
  *
  * @param {string} requestUrl
  * @param {string} [baseUrl]
  * @returns {Object}
  */
 export function parseUrl(requestUrl, baseUrl) {
-  const { hostname, pathname, search, protocol, port, username, password } = baseUrl
-    ? new URL(requestUrl, baseUrl)
-    : new URL(requestUrl);
+  const { 
+    hostname, pathname, search, protocol, port, username, password
+   } = new URL(requestUrl, baseUrl || undefined);
 
   return {
     hostname,

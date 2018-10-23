@@ -1,6 +1,6 @@
 {
   "name": "pico-ajax",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Very tiny yet functional ajax library written in ES6",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -8,15 +8,15 @@
     "test": "tests"
   },
   "devDependencies": {
-    "babel-plugin-external-helpers": "^6.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "jasmine": "^2.6.0",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "jasmine": "^3.2.0",
     "jasmine-ajax": "^3.3.1",
-    "rollup": "^0.49.3",
-    "rollup-plugin-babel": "^2.7.1",
+    "rollup": "^0.66.6",
+    "rollup-plugin-babel": "^4.0.3",
     "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-uglify": "^2.0.1",
+    "rollup-plugin-terser": "^3.0.0",
     "rollup-watch": "^4.3.1"
   },
   "scripts": {
@@ -47,5 +47,10 @@
   "bugs": {
     "url": "https://github.com/udivankin/pico-ajax/issues"
   },
-  "homepage": "https://github.com/udivankin/pico-ajax#readme"
+  "homepage": "https://github.com/udivankin/pico-ajax#readme",
+  "dependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "rollup-plugin-terser": "^3.0.0"
+  }
 }

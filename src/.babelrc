@@ -1,6 +1,6 @@
 {
   "presets": [
-    ["env", {
+    ["@babel/env", {
       "modules": false,
       "targets": {
         "browsers": "since 2015",
@@ -8,5 +8,5 @@
       }
     }]
   ],
-  "plugins": ["transform-object-rest-spread", "external-helpers"]
+  "plugins": ["@babel/plugin-proposal-object-rest-spread"]
 }

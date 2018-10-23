@@ -1,11 +1,18 @@
 import babel from 'rollup-plugin-babel';
 import resolve from 'rollup-plugin-node-resolve';
-import uglify from 'rollup-plugin-uglify';
+import { terser } from 'rollup-plugin-terser';
 
 export default {
   input: 'src/index.js',
-  name: 'pico-ajax',
-  footer: 'if (typeof window !== "undefined") { window.PicoAjax = window["pico-ajax"]; }',
+  output: {
+    file: 'dist/index.js',
+    format: 'umd',
+    name: 'pico-ajax',
+    globals: {
+      zlib: 'zlib', http: 'http', https: 'https', url: 'url'
+    },
+    footer: 'if (typeof window !== "undefined") { window.PicoAjax = window["pico-ajax"]; }',
+  },
   plugins: [
     babel({
       exclude: 'node_modules/**' // only transpile our source code
@@ -14,14 +21,7 @@ export default {
       jsnext: true,
       main: true,
     }),
-    uglify()
+    terser(),
   ],
-  external: ['zlib', 'http', 'https'],
-  globals: {
-    zlib: 'zlib', http: 'http', https: 'https'
-  },
-  output: {
-    file: 'dist/index.js',
-    format: 'umd',
-  }
+  external: ['zlib', 'http', 'https', 'url'],
 };

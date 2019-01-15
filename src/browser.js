@@ -74,7 +74,7 @@ export function browserRequest(method, originalUrl, options) {
     // Define onload callback
     xhr.addEventListener('load', () => {
       if (xhr.status !== 200) {
-        reject(new Error(`[${xhr.status}] ${xhr.statusText} ${xhr.response}`));
+        reject(new Error(`[${xhr.status}] ${xhr.response}`));
       } else {
         resolve(handleBrowserResponse(xhr));
       }

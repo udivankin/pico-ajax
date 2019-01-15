@@ -56,13 +56,15 @@ function createServerResponseHandler(resolve, reject) {
     });
 
     response.on('end', () => {
-      const { headers, statusCode, statusText } = response;
+      const { statusCode, statusText } = response;
+      const responseBytes = Buffer.concat(responseBuffer);
+
       // Resolve on ok
       if (statusCode >= 200 && statusCode < 300) {
-        return resolve(handleServerResponse(response, Buffer.concat(responseBuffer)));
+        return resolve(handleServerResponse(response, responseBytes));
       }
       // Reject on error
-      reject(new Error(`${statusCode} ${statusText}`));
+      reject(new Error(`${statusCode} ${responseBytes.toString('utf8')}`));
     });
   }
 }

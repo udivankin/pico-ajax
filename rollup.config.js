@@ -1,27 +1,40 @@
-import babel from 'rollup-plugin-babel';
-import resolve from 'rollup-plugin-node-resolve';
+import resolve from '@rollup/plugin-node-resolve';
+import babel from '@rollup/plugin-babel';
 import { terser } from 'rollup-plugin-terser';
 
-export default {
-  input: 'src/index.js',
-  output: {
-    file: 'dist/index.js',
-    format: 'umd',
-    name: 'pico-ajax',
-    globals: {
-      zlib: 'zlib', http: 'http', https: 'https', url: 'url'
+export default [
+  {
+    input: 'src/server.js',
+    watch: true,
+    output: {
+      file: 'dist/index.cjs.js',
+      format: 'cjs',
+      plugins: [babel()]
     },
-    footer: 'if (typeof window !== "undefined") { window.PicoAjax = window["pico-ajax"]; }',
+    plugins: [resolve()]
   },
-  plugins: [
-    babel({
-      exclude: 'node_modules/**' // only transpile our source code
-    }),
-    resolve({
-      jsnext: true,
-      main: true,
-    }),
-    terser(),
-  ],
-  external: ['zlib', 'http', 'https', 'url'],
-};
+  {
+    input: 'src/server.js',
+    watch: true,
+    output: { file: 'dist/index.es.js', format: 'es' },
+    plugins: [resolve()]
+  },
+  {
+    input: 'src/browser.js',
+    watch: true,
+    output: [
+      {
+        file: 'dist/picoajax.min.js',
+        format: 'iife',
+        name: 'PicoAjax',
+        plugins: [
+          babel({
+            exclude: 'node_modules/**' // only transpile our source code
+          }),
+          terser(),
+        ]
+      },
+    ],
+    plugins: [resolve()]
+  }
+];

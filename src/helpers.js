@@ -7,6 +7,61 @@ import https from 'https';
 import zlib from 'zlib';
 import { URL } from 'url';
 
+ /**
+  * @typedef {Object} PicoAjaxRequestOptions
+  * @property {string} [body]
+  * @property {Object} [headers]
+  * @property {string} [username]
+  * @property {string} [password]
+  * @property {number} [timeout]
+  * @property {boolean} [async] (Browser-specific)
+  * @property {function} [onProgress] (Browser-specific)
+  * @property {XMLHttpRequestResponseType} [responseType] (Browser-specific)
+  * @property {boolean} [withCredentials] (Browser-specific)
+  */
+ 
+ /**
+  * @typedef {function} HttpRequest
+  * @property {string} url
+  * @property {PicoAjaxRequestOptions} [options]
+  */
+
+ /**
+  * @typedef {Object} PicoAjax
+  * @property {HttpRequest} get
+  * @property {HttpRequest} post
+  * @property {HttpRequest} put
+  * @property {HttpRequest} delete
+  * @property {HttpRequest} head
+  * @property {HttpRequest} patch
+  * @property {HttpRequest} connect
+  * @property {HttpRequest} options
+  */
+
+/**
+ * Known HTTP request methods
+ */
+export const REQUEST_METHODS = [
+  'CONNECT', 'DELETE', 'GET', 'HEAD', 'OPTIONS', 'PATCH', 'POST', 'PUT',
+];
+
+/**
+ * Default request options
+ * 
+ * @type {PicoAjaxRequestOptions}
+ */
+export const DEFAULT_OPTIONS = {
+  body: undefined,
+  headers: {},
+  username: undefined,
+  password: undefined,
+  timeout: undefined,
+  async: true,
+  onProgress: null,
+  responseType: '',
+  withCredentials: undefined,
+};
+
 const MAX_REDIRECTS = 21;
 
 /**

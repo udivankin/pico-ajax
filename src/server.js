@@ -3,10 +3,18 @@
  */
 
 import http from 'http';
-import { composeAuthHeader, decompress, followRedirects, parseJson, parseUrl } from './helpers';
+import {
+  DEFAULT_OPTIONS,
+  REQUEST_METHODS,
+  composeAuthHeader,
+  decompress,
+  followRedirects,
+  parseJson,
+  parseUrl,
+} from './helpers';
 
 /**
- * @typedef {import('./index').PicoAjaxRequestOptions} PicoAjaxRequestOptions
+ * @typedef {import('./common').PicoAjaxRequestOptions} PicoAjaxRequestOptions
  */
 
 /**
@@ -97,7 +105,7 @@ const getServerRequestOptions = (method, originalUrl, options) => ({
  * @param {Object} options request options
  * @returns {Promise}
  */
-export function serverRequest(method, url, options) {
+function serverRequest(method, url, options) {
   return new Promise((resolve, reject) => {
     const request = followRedirects(
       getServerRequestOptions(method, url, options),
@@ -115,3 +123,16 @@ export function serverRequest(method, url, options) {
     request.end();
   });
 }
+
+/**
+ * Generate request methods
+ */
+const picoAjax = REQUEST_METHODS.reduce(
+  (result, method) => {
+    result[method.toLowerCase()] = (url, options) => serverRequest(method, url, { ...DEFAULT_OPTIONS, ...options });
+    return result;
+  },
+  {}
+);
+
+export default picoAjax;

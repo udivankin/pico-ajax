@@ -4,9 +4,8 @@
       "modules": false,
       "targets": {
         "browsers": "since 2015",
-        "node": "6.10"
+        "node": "10"
       }
     }]
-  ],
-  "plugins": ["@babel/plugin-proposal-object-rest-spread"]
+  ]
 }

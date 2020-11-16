@@ -1,4 +1,4 @@
-const PicoAjax = require('../dist/index.js');
+const PicoAjaxCJS = require('../dist/index.cjs.js');
 
 describe('PicoAjax', function() {
   describe('Public methods', function() {
@@ -6,12 +6,12 @@ describe('PicoAjax', function() {
 
     it('should expose full number of methods', function() {
       PUBLIC_METHODS.forEach(method => {
-        expect(PicoAjax[method]).toBeDefined();
+        expect(PicoAjaxCJS[method]).toBeDefined();
       });
     });
 
     it('should not have other public properties', function() {
-      for (const libraryProperty in PicoAjax) {
+      for (const libraryProperty in PicoAjaxCJS) {
         expect(PUBLIC_METHODS.indexOf(libraryProperty)).toBeGreaterThan(-1);
       }
     });

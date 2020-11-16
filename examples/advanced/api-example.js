@@ -32,6 +32,11 @@ const defaultRequestOptions = {
 };
 
 /**
+ * Default request URL prefix
+ */
+const API_URL = 'https://example.com';
+
+/**
  * Request method wrapper
  *
  * @param {string} requestMethod
@@ -42,7 +47,7 @@ const defaultRequestOptions = {
 const picoAjaxWrapper = (requestMethod, requestUrl, requestParams) => {
   if (requestMethod === 'get') {
     return PicoAjax.get(
-      `${requestUrl}?${qs.stringify(requestParams)}`,
+      `${API_URL}${requestUrl}?${qs.stringify(requestParams)}`,
       defaultRequestOptions,
     );
   }

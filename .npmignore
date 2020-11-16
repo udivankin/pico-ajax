@@ -1,2 +1,8 @@
-/node_modules/
-/src/
+/node_modules
+/src
+/examples
+/tests
+.gitignore
+.npmignore
+jasmine.json
+rollup.config.js

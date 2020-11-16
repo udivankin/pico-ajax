@@ -2,10 +2,14 @@
  * Pico-ajax library browser adapter
  */
 
-import { parseJson } from './helpers';
+import {
+  DEFAULT_OPTIONS,
+  REQUEST_METHODS,
+  parseJson,
+} from './helpers';
 
 /**
- * @typedef {import('./index').PicoAjaxRequestOptions} PicoAjaxRequestOptions
+ * @typedef {import('./common').PicoAjaxRequestOptions} PicoAjaxRequestOptions
  */
 
 /**
@@ -37,7 +41,7 @@ function handleBrowserResponse(xhr) {
  * @param {PicoAjaxRequestOptions} options request options
  * @returns {Promise}
  */
-export function browserRequest(method, originalUrl, options) {
+function browserRequest(method, originalUrl, options) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
 
@@ -81,3 +85,16 @@ export function browserRequest(method, originalUrl, options) {
     });
   });
 }
+
+/**
+ * Generate request methods
+ */
+const picoAjax = REQUEST_METHODS.reduce(
+  (result, method) => {
+    result[method.toLowerCase()] = (url, options) => browserRequest(method, url, Object.assign({}, DEFAULT_OPTIONS, options));
+    return result;
+  },
+  {}
+);
+
+export default picoAjax;

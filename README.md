@@ -1,5 +1,5 @@
 # PicoAjax
-Universal, very tiny (less than 2kb compressed) yet fully functional AJAX library with zero dependencies. It implements browser XMLHttpRequest and Node.js http module returning Promise.
+Universal, very tiny (browser version is ~1kb uncompressed) yet fully functional AJAX library with zero dependencies. It implements browser XMLHttpRequest and Node.js http module returning Promise.
 
 ## Motivation
 What makes Pico-Ajax different is that it's unaware on how data is passed. That requires a few more bytes of code to make a request, but gives much more control and (more important) better understanding of HTTP requests in exchange. This also makes it perfect for building your own DIY API module.
@@ -56,14 +56,13 @@ PicoAjax
     console.error(error);
   });
 ```
-
-Sending data requires a little bit more effort:
+**Multipart/form-data**
 
 ```javascript
-// Prepare form data using DOM form
+// Prepare form data using DOM form (Browser only)
 const formData = new FormData(document.querySelector('form'));
 
-// Or with a plain object
+// Or with a plain object 
 const foo = { bar: 'baz' };
 const formData = new FormData();
 
@@ -101,7 +100,7 @@ PicoAjax
 **File upload**
 
 ```javascript
-const formData = new FormData();
+const formData = new FormData(); 
 formData.append('userfile', fileInputElement.files[0]);
 
 PicoAjax

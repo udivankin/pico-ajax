@@ -6,22 +6,22 @@ export type PicoAjaxRequestOptions = {
   timeout?: number;
   async?: boolean;
   onProgress?: Function;
-  responseType?: XMLHttpRequestResponseType;
+  responseType?: '' | 'arraybuffer' | 'blob' | 'document' | 'json' | 'text';
   withCredentials?: boolean;
 }
 
 export type PicoAjaxResponse = {
   statusCode: number;
   statusMessage: string;
-  headers: any;
-  body: Buffer|string|null;
+  headers: Record<string, any>|null;
+  body: any;
 }
 
 export type PicoAjaxResponseError = Error & {
   statusCode: number;
   statusMessage: string;
-  headers: any;
-  body: Buffer|string|null;
+  headers: Record<string, any>|null;
+  body: any;
 }
 
 export interface PicoAjaxRequest {

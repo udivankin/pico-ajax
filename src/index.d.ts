@@ -40,6 +40,5 @@ export interface PicoAjax {
   trace?: PicoAjaxRequest;
 }
 
-declare module 'pico-ajax' {
-  export default PicoAjax;
-}
+declare const picoAjax: PicoAjax;
+export default picoAjax;

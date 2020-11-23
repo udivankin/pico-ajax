@@ -14,9 +14,11 @@ Via npm:
 npm install --save pico-ajax
 ```
 
-then import pico-ajax as UMD module
+then import pico-ajax module
 ```javascript
 import PicoAjax from 'pico-ajax';
+// or if you use CommonJS imports:
+const PicoAjax = require('pico-ajax');
 ```
 
 Or use as a legacy module (will be available as PicoAjax in a global scope):

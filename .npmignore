@@ -6,3 +6,4 @@
 .npmignore
 jasmine.json
 rollup.config.js
+tsconfig.json

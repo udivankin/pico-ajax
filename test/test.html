@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="description" content="">
+  <meta name="author" content="">
+  <script src="/picoajax.js"></script>
+  <script>
+    const PORT = 8123;
+    const url = `http://localhost:${PORT}`;
+    const PUBLIC_METHODS = ['get', 'put', 'post', 'delete', 'patch', 'options', 'head']; // no 'trace' here
+
+    function log(target, glyph = '', text = '', method = '', url = '', ...data) {
+      const logEntry = document.createElement('div');
+      logEntry.append(`${glyph} ${text} | ${method.toUpperCase()} ${url} ${JSON.stringify(data)}`);
+      document.getElementById(`${target}-result`).append(logEntry);
+    }
+
+    function isObject(o) {
+      return Object.prototype.toString.call(o) === '[object Object]';
+    }
+
+    function isEqual(object1, object2) {
+      const keys1 = Object.keys(object1);
+      const keys2 = Object.keys(object2);
+
+      if (keys1.length !== keys2.length) {
+        return false;
+      }
+
+      for (const key of keys1) {
+        const val1 = object1[key];
+        const val2 = object2[key];
+        const areObjects = isObject(val1) && isObject(val2);
+        if (
+          (areObjects && !isEqual(val1, val2)) ||
+          (!areObjects && val1 !== val2)
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    function validateResponseBody(method, test, response) {
+      if (!response.body.toString() && !test.responseBody) return true;
+      if (method === 'head') return true;
+      
+      try {
+        const responseJson = isObject(response.body) ? response.body : JSON.parse(response.body);
+        const testJson = isObject(test.responseBody) ? test.responseBody : JSON.parse(test.responseBody);
+        return isEqual(responseJson, testJson);
+      } catch (e) {
+        return response.body?.toString() === test.responseBody?.toString();
+      }
+    }
+
+    function validateResponseHeaders(method, test, response) {
+      if (!test.responseHeaders) return true;
+      for (const h of Object.keys(test.responseHeaders)) {
+        if (response.headers?.[h] !== test.responseHeaders[h]) return false;
+      }
+      return true;
+    }
+
+    async function start() {
+      const data = await PicoAjax.get(url + '/test.json');
+
+      if (!data.body) {
+        log('browser', 'error', 'get', '/test.json');
+        return;
+      }
+
+      for (const testCase of Object.keys(data.body)) {
+        let test = data.body[testCase];
+        if (test.disabled) continue;
+
+        for (const method of PUBLIC_METHODS) {
+          try {
+            let requestOptions = {};
+
+            if (test.requestHeaders) {
+              requestOptions.headers = test.requestHeaders;
+            }
+
+            if (test.requestBody) {
+              requestOptions.body = test.requestBody;
+            }
+
+            if (test.username) {
+              requestOptions.username = test.username;
+            }
+
+            if (test.password) {
+              requestOptions.password = test.password;
+            }
+
+            let response;
+
+            try {
+              response = (await PicoAjax[method](`http://localhost:${PORT}${testCase}`, requestOptions));
+            } catch(e) {
+              response = e;
+            }
+
+            // Mutate current expected test data
+            if (test.expectRedirect) {
+              test = data.body[test.expectRedirect];
+            }
+
+            if (response.statusCode !== test.responseCode) {
+              log('browser', '❌', 'Response code mismatch', method, testCase, test.responseCode, '!==', response.statusCode);
+            } else {
+              log('browser', '✅', 'Response code OK', method, testCase);
+            }
+
+            if (!validateResponseBody(method, test, response)) {
+              log('browser', '❌', 'Response body mismatch', method, testCase, test.responseBody, '!==', response.body);
+            } else {
+              log('browser', '✅', 'Response body OK', method, testCase);
+            }
+
+            if (!validateResponseHeaders(method, test, response)) {
+              log('browser', '❌', 'Response headers mismatch', method, testCase, test.responseHeaders, '!==', response.headers);
+            } else {
+              log('browser', '✅', 'Response headers OK', method, testCase);
+            }
+
+          } catch(e) {
+            log('browser', '❌', e);
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body>
+  <button onclick="start()">start test</button>
+  <br>
+  <div id="browser-result"></div>
+  <div id="server-result"></div>
+</body>
+</html>

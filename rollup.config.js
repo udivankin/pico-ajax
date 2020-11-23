@@ -1,40 +1,87 @@
-import resolve from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
+import typescript from '@rollup/plugin-typescript';
+import resolve from '@rollup/plugin-node-resolve';
 import { terser } from 'rollup-plugin-terser';
+import copy from 'rollup-plugin-copy';
 
 export default [
   {
-    input: 'src/server.js',
+    input: 'src/server.ts',
     watch: true,
     output: {
-      file: 'dist/index.cjs.js',
+      dir: 'dist/cjs',
+      entryFileNames: 'picoajax.js',
+      exports: 'auto',
       format: 'cjs',
-      plugins: [babel()]
     },
-    plugins: [resolve()]
+    external: ['http', 'https', 'zlib', 'url'],
+    plugins: [
+      resolve(),
+      typescript({
+        declaration: true,
+        declarationDir: "./dist/cjs",
+        lib: ["ES2020", "DOM"],
+        target: "ES2015",
+      }),
+      babel({
+        babelHelpers: 'bundled',
+      }),
+      copy({
+        targets: [
+          { src: 'src/index.d.ts', dest: ['dist/cjs', 'dist/es'] },
+        ]
+      }),
+    ]
   },
   {
-    input: 'src/server.js',
+    input: 'src/server.ts',
     watch: true,
-    output: { file: 'dist/index.es.js', format: 'es' },
-    plugins: [resolve()]
+    output: {
+      entryFileNames: 'picoajax.js',
+      dir: 'dist/es',
+      format: 'es',
+    },
+    external: ['http', 'https', 'zlib', 'url'],
+    plugins: [
+      resolve(),
+      typescript({
+        declaration: true,
+        declarationDir: "./dist/es",
+        lib: ["ES2020", "DOM"],
+        target: "ES2019",
+      }),
+    ]
   },
   {
-    input: 'src/browser.js',
+    input: 'src/browser.ts',
     watch: true,
     output: [
       {
-        file: 'dist/picoajax.min.js',
+        file: 'dist/browser/picoajax.min.js',
         format: 'iife',
         name: 'PicoAjax',
         plugins: [
-          babel({
-            exclude: 'node_modules/**' // only transpile our source code
+          terser({ 
+            format: {
+              comments: false,
+            },
           }),
-          terser(),
         ]
       },
+      {
+        file: 'dist/browser/picoajax.js',
+        format: 'iife',
+        name: 'PicoAjax',
+      },
     ],
-    plugins: [resolve()]
+    plugins: [
+      babel({
+        babelHelpers: 'bundled',
+      }),
+      typescript({
+        lib: ["ES2020", "DOM"],
+        target: "ES5",
+      }),
+    ]
   }
 ];

@@ -25,7 +25,7 @@ export type PicoAjaxResponseError = Error & {
 }
 
 export interface PicoAjaxRequest {
-  (url: string, options: PicoAjaxRequestOptions): Promise<PicoAjaxResponse|PicoAjaxResponseError>;
+  (url: string, options?: PicoAjaxRequestOptions): Promise<PicoAjaxResponse|PicoAjaxResponseError>;
 }
 
 export interface PicoAjax {

@@ -2,7 +2,11 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "module": "es6",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true
   },
   "include": [
     "./src/*"

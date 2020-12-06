@@ -27,7 +27,7 @@ function isEqual(object1, object2) {
 }
 
 const PUBLIC_METHODS = ['get', 'put', 'post', 'delete', 'patch', 'options', 'head', 'trace'];
-const PORT = 8123;
+const PORT = 8228;
 const TEST_CASES = require('./test.json');
 
 function log(glyph = '', text = '', method = '', url = '', ...data) {

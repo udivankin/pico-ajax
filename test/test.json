@@ -47,14 +47,14 @@
   "/redirect/1":{
      "requestBody":"redirect-data",
      "responseHeaders":{
-        "location":"http://localhost:8123/redirect/2"
+        "location":"http://localhost:8228/redirect/2"
      },
      "responseCode":302,
      "expectRedirect":"/redirect/final"
   },
   "/redirect/2":{
      "responseHeaders":{
-        "location":"http://localhost:8123/redirect/final"
+        "location":"http://localhost:8228/redirect/final"
      },
      "responseCode":302,
      "disabled":true

@@ -21,12 +21,14 @@ const XHR_RESPONSE_TYPES = [
 /**
  * Headers string parser
  */
-function parseHeaders(headersString: string) {
+function parseHeaders(headersString: string): Record<string, string> {
   return headersString.split(/[\r\n]+/).filter(Boolean).reduce((acc, h) => {
-    const header = h.split(':').map(s => (s||'').trim());
-    acc[header[0]] = header[1];
+    const header = h.split(':').map((s) => (s || '').trim());
+    if (header.length === 2) {
+      acc[header[0]] = header[1];
+    }
     return acc;
-  }, {});
+  }, {} as Record<string, string>);
 }
 
 /**

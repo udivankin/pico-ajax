@@ -116,7 +116,7 @@ function createServerResponseHandler(
 ) {
   return (response: http.IncomingMessage) => {
     const { headers, statusCode, statusMessage } = response;
-    const responseBuffer = [];
+    const responseBuffer: Buffer[] = [];
 
     response.on('data', (chunk) => {
       responseBuffer.push(chunk);

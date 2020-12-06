@@ -18,17 +18,12 @@ export default [
     plugins: [
       resolve(),
       typescript({
-        declaration: true,
-        declarationDir: "./dist/cjs",
-        lib: ["ES2020", "DOM"],
-        target: "ES2015",
-      }),
-      babel({
-        babelHelpers: 'bundled',
+        lib: ['ES2020', 'DOM'],
+        target: 'ES2015',
       }),
       copy({
         targets: [
-          { src: 'src/index.d.ts', dest: ['dist/cjs', 'dist/es'] },
+          { src: 'src/index.d.ts', dest: 'dist/es' },
         ]
       }),
     ]
@@ -45,10 +40,13 @@ export default [
     plugins: [
       resolve(),
       typescript({
-        declaration: true,
-        declarationDir: "./dist/es",
-        lib: ["ES2020", "DOM"],
-        target: "ES2019",
+        lib: ['ES2020', 'DOM'],
+        target: 'ES2019',
+      }),
+      copy({
+        targets: [
+          { src: 'src/index.d.ts', dest: 'dist/cjs' },
+        ]
       }),
     ]
   },
@@ -75,12 +73,9 @@ export default [
       },
     ],
     plugins: [
-      babel({
-        babelHelpers: 'bundled',
-      }),
       typescript({
-        lib: ["ES2020", "DOM"],
-        target: "ES5",
+        lib: ['ES2020', 'DOM'],
+        target: 'ES5',
       }),
     ]
   }
